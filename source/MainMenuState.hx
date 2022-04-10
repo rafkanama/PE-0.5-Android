@@ -46,7 +46,8 @@ class MainMenuState extends MusicBeatState
 	var camFollow:FlxObject;
 	var camFollowPos:FlxObject;
 	var debugKeys:Array<FlxKey>;
-
+    private var  char1:Character = null;
+    
 	override function create()
 	{
 		#if desktop
@@ -114,7 +115,7 @@ class MainMenuState extends MusicBeatState
 			menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
 			menuItem.animation.play('idle');
 			menuItem.ID = i;
-			menuItem.screenCenter(X);
+			menuItem.x += 250;
 			menuItems.add(menuItem);
 			var scr:Float = (optionShit.length - 4) * 0.135;
 			if(optionShit.length < 6) scr = 0;
@@ -125,6 +126,11 @@ class MainMenuState extends MusicBeatState
 		}
 
 		FlxG.camera.follow(camFollowPos, null, 1);
+
+        char1 = new Character(800, -130, 'bf', true);
+        char1.setGraphicSize(Std.int(char1.width * 0.8));
+        add(char1);
+        char1.visible = false;
 
 		var versionShit:FlxText = new FlxText(12, FlxG.height - 44, 0, "Psych Engine v" + psychEngineVersion, 12);
 		versionShit.scrollFactor.set();
@@ -179,7 +185,21 @@ class MainMenuState extends MusicBeatState
 
 		var lerpVal:Float = CoolUtil.boundTo(elapsed * 7.5, 0, 1);
 		camFollowPos.setPosition(FlxMath.lerp(camFollowPos.x, camFollow.x, lerpVal), FlxMath.lerp(camFollowPos.y, camFollow.y, lerpVal));
-
+        
+        if (optionShit[curSelected] == 'story_mode')
+        {
+           changeItem(-1);
+           chageItem(1);
+           
+           char1.dance();
+           char1.updateHitbox();
+           char1.visible = true;
+        }
+        else
+        {       
+                char1.visible = false;
+        }
+        
 		if (!selectedSomethin)
 		{
 			if (controls.UI_UP_P)
